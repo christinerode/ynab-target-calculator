@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "YNAB Expense Calculator",
+  "version": "1.0.0",
+  "description": "Add a mini spreadsheet to YNAB category sidebars for calculating recurring expenses",
+  "permissions": ["storage"],
+  "host_permissions": ["https://app.ynab.com/*"],
+  "content_scripts": [
+    {
+      "matches": ["https://app.ynab.com/*"],
+      "js": ["currency.js", "storage.js", "ui.js", "content.js"],
+      "css": ["styles.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "icons": {
+    "16": "icon16.png",
+    "32": "icon32.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  }
+ 
+}
