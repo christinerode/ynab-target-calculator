@@ -23,7 +23,7 @@ This extension gives you a small calculator embedded in the sidebar for each cat
 - Create a record of when and how you came to the budgeted amount  
 - Quickly tell if you need to adjust your target  
 
-![Category sidebar with calculator](assets/ynab 3.png)
+![Category sidebar with calculator](assets/ynab3.png)
 
 Think of it as notes, but better.
 
@@ -31,7 +31,7 @@ Think of it as notes, but better.
 
 ## Features
 
-![Calculator with multiple line items](assets/ynab 4.png)
+![Calculator with multiple line items](assets/ynab4.png)
 
 - **Mini spreadsheet in the category sidebar**  
   Add individual line items for all the recurring expenses that roll into a category.
@@ -51,7 +51,7 @@ Think of it as notes, but better.
 - **Exclude / pause expenses**  
   Temporarily exclude an item from the total when a subscription is paused, without losing the line for later.
 
-![Target exceeded warning](assets/ynab 5.png)
+![Target exceeded warning](assets/ynab5.png)
 
 ---
 
