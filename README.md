@@ -29,8 +29,6 @@ Think of it as notes, but better.
 
 ---
 
-![Calculator with multiple line items](assets/ynab4.png)
-
 ## Features
 
 - **Mini spreadsheet in the category sidebar**  
@@ -53,7 +51,7 @@ Think of it as notes, but better.
 
 ---
 
-![Target exceeded warning](assets/ynab5.png)
+![Calculator with multiple line items](assets/ynab4.png)
 
 ## How it works
 
@@ -68,6 +66,8 @@ Think of it as notes, but better.
 Over time, the calculator becomes a living log of how you structure that category, instead of a number you have to remember or re‑infer.
 
 ---
+
+![Target exceeded warning](assets/ynab5.png)
 
 ## Installation
 
