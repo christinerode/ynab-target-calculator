@@ -29,9 +29,9 @@ Think of it as notes, but better.
 
 ---
 
-## Features
-
 ![Calculator with multiple line items](assets/ynab4.png)
+
+## Features
 
 - **Mini spreadsheet in the category sidebar**  
   Add individual line items for all the recurring expenses that roll into a category.
@@ -51,9 +51,9 @@ Think of it as notes, but better.
 - **Exclude / pause expenses**  
   Temporarily exclude an item from the total when a subscription is paused, without losing the line for later.
 
-![Target exceeded warning](assets/ynab5.png)
-
 ---
+
+![Target exceeded warning](assets/ynab5.png)
 
 ## How it works
 
