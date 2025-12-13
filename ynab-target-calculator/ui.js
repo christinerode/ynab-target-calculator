@@ -120,10 +120,8 @@
         <section id="target-calculator-card" class="card target-calculator-card ${collapsed ? 'is-collapsed' : ''}">
           <button class="card-roll-up" aria-expanded="${!collapsed}" type="button" style="padding: 10px 8px 10px 16px;">
             <h2>
-              <svg class=" " width="16" height="16" viewBox="0 0 16 16" style="margin-right: 8px;">
-                <rect x="1" y="3" width="14" height="10" rx="1" fill="none" stroke="currentColor" stroke-width="1.2"/>
-                <line x1="1" y1="7" x2="15" y2="7" stroke="currentColor" stroke-width="1"/>
-                <line x1="6" y1="7" x2="6" y2="13" stroke="currentColor" stroke-width="1"/>
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-right: 8px; display: block;">
+                <path d="M1.86279 8.37158V6.99463H18.1958V8.37158H1.86279ZM1.86279 12.4438V11.0669H18.1958V12.4438H1.86279ZM9.29688 15.9668V3.47168H10.7031V15.9668H9.29688ZM3.72314 16.5527C2.93213 16.5527 2.33398 16.3525 1.92871 15.9521C1.52344 15.5518 1.3208 14.9609 1.3208 14.1797V5.25879C1.3208 4.47754 1.52344 3.88672 1.92871 3.48633C2.33398 3.08105 2.93213 2.87842 3.72314 2.87842H16.2622C17.0581 2.87842 17.6587 3.08105 18.064 3.48633C18.4692 3.88672 18.6719 4.47754 18.6719 5.25879V14.1797C18.6719 14.9609 18.4692 15.5518 18.064 15.9521C17.6587 16.3525 17.0581 16.5527 16.2622 16.5527H3.72314ZM3.81104 15.1172H16.1816C16.5186 15.1172 16.7773 15.0293 16.958 14.8535C17.1387 14.6729 17.229 14.4067 17.229 14.0552V5.3833C17.229 5.03174 17.1387 4.76807 16.958 4.59229C16.7773 4.41162 16.5186 4.32129 16.1816 4.32129H3.81104C3.46924 4.32129 3.20801 4.41162 3.02734 4.59229C2.85156 4.76807 2.76367 5.03174 2.76367 5.3833V14.0552C2.76367 14.4067 2.85156 14.6729 3.02734 14.8535C3.20801 15.0293 3.46924 15.1172 3.81104 15.1172Z" fill="currentColor"/>
               </svg>
               Estimate Expenses
               ${collapsed ? Icons.chevronRight : Icons.chevronDown}
@@ -189,7 +187,7 @@
       const isUnder = total < targetAmount;
       
       // Format messages differently for yearly vs monthly
-      const totalLabel = targetType === 'yearly' ? 'yearly total' : 'estimated total';
+      const totalLabel = targetType === 'yearly' ? 'yearly estimated total' : 'estimated total';
       const totalDisplay = Currency.format(total);
       
       if (matchesTarget) {
@@ -226,7 +224,8 @@
       const isEdit = !!expense;
       const amountValue = expense ? expense.amount : '';
       const currencySymbol = Currency.getSymbol();
-      const placeholder = `${currencySymbol}0.00`;
+      // Use Currency.format for placeholder to handle currencies with symbol after number
+      const placeholder = Currency.format(0);
       // Format amount as currency when editing, otherwise show empty
       const displayAmount = amountValue ? Currency.format(amountValue) : '';
       const targetType = getTargetType();
@@ -252,12 +251,13 @@
           <div class="actions">
             <div class="actions-left">
               ${isEdit ? `
-                <button class="ynab-button secondary button-hide" type="button" data-action="hide" title="${expense?.disabled ? 'Show' : 'Hide'}" aria-label="${expense?.disabled ? 'Show' : 'Hide'}">
-                  ${expense?.disabled ? Icons.visibilityOff : Icons.visibility}
-                </button>
                 <button class="ynab-button destructive button-delete" type="button" data-action="delete">
                   Delete
                 </button>
+                <button class="ghost-button secondary button-hide" type="button" data-action="hide" title="${expense?.disabled ? 'Show' : 'Hide'}" aria-label="${expense?.disabled ? 'Show' : 'Hide'}">
+                  ${expense?.disabled ? Icons.visibility : Icons.visibilityOff}
+                </button>
+
               ` : ''} 
               
             </div>

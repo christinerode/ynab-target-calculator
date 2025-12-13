@@ -11,6 +11,57 @@
   let isFormVisible = false;
   let editingExpenseId = null;
 
+  // Setup keyboard handlers for form inputs (Enter to save)
+  function setupFormKeyboardHandlers() {
+    const payeeInput = document.getElementById('tc-payee');
+    const notesInput = document.getElementById('tc-notes');
+    const amountInput = document.getElementById('tc-amount-input');
+    
+    const handleEnter = async (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        
+        // Determine if we're creating or editing
+        const isEdit = !!editingExpenseId;
+        
+        if (isEdit) {
+          await updateExpense(editingExpenseId);
+        } else {
+          await saveExpense();
+        }
+      }
+    };
+    
+    if (payeeInput) {
+      payeeInput.addEventListener('keydown', handleEnter);
+    }
+    if (notesInput) {
+      notesInput.addEventListener('keydown', handleEnter);
+    }
+    if (amountInput) {
+      // Amount input already has Enter handler, but we need to make sure it saves
+      amountInput.addEventListener('keydown', async (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          const value = amountInput.value.trim();
+          if (value) {
+            const parsed = Currency.parse(value);
+            amountInput.value = Currency.format(parsed);
+          }
+          
+          // Determine if we're creating or editing
+          const isEdit = !!editingExpenseId;
+          
+          if (isEdit) {
+            await updateExpense(editingExpenseId);
+          } else {
+            await saveExpense();
+          }
+        }
+      });
+    }
+  }
+
   // Setup currency input behavior
   function setupSimpleCurrencyInput() {
     const amountInput = document.getElementById('tc-amount-input');
@@ -36,44 +87,37 @@
       }
     });
 
-    // Also handle Enter key
-    amountInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        const value = amountInput.value.trim();
-        if (value) {
-          const parsed = Currency.parse(value);
-          // Format as currency for display
-          amountInput.value = Currency.format(parsed);
-        }
-        amountInput.blur();
-      }
-    });
+    // Note: Enter key handling for saving is now in setupFormKeyboardHandlers
+    // to avoid duplicate handlers
   }
 
-  // Prevent YNAB's Cmd+A shortcut from triggering when our inputs are focused
+  // Prevent YNAB's keyboard shortcuts from triggering when our inputs are focused
   function setupInputKeyboardHandlers() {
-    // Handle Cmd+A / Ctrl+A to select all text in our inputs
+    // Handle Cmd+A / Ctrl+A and arrow keys to prevent YNAB's handlers
     document.addEventListener('keydown', (e) => {
-      // Check if Cmd+A (Mac) or Ctrl+A (Windows/Linux) is pressed
-      const isSelectAll = (e.metaKey || e.ctrlKey) && e.key === 'a' && !e.shiftKey && !e.altKey;
+      // Check if the focused element is one of our input fields
+      const activeElement = document.activeElement;
+      const isOurInput = activeElement && (
+        activeElement.id === 'tc-payee' ||
+        activeElement.id === 'tc-notes' ||
+        activeElement.id === 'tc-amount-input'
+      );
       
-      if (isSelectAll) {
-        // Check if the focused element is one of our input fields
-        const activeElement = document.activeElement;
-        const isOurInput = activeElement && (
-          activeElement.id === 'tc-payee' ||
-          activeElement.id === 'tc-notes' ||
-          activeElement.id === 'tc-amount-input'
-        );
+      if (isOurInput) {
+        // Check if Cmd+A / Ctrl+A is pressed
+        const isSelectAll = (e.metaKey || e.ctrlKey) && e.key === 'a' && !e.shiftKey && !e.altKey;
         
-        if (isOurInput) {
+        // Check if arrow up/down is pressed
+        const isArrowKey = e.key === 'ArrowUp' || e.key === 'ArrowDown';
+        
+        if (isSelectAll || isArrowKey) {
           // Prevent YNAB's handler from firing
           e.stopPropagation();
           e.stopImmediatePropagation();
           
-          // Let the default browser behavior select all text in the input
-          // (we don't preventDefault, so the browser's native select-all works)
+          // For Cmd+A, let the default browser behavior select all text
+          // For arrow keys, let the default browser behavior work (moving cursor)
+          // (we don't preventDefault, so the browser's native behavior works)
         }
       }
     }, true); // Use capture phase to intercept before YNAB's handlers
@@ -134,7 +178,10 @@
     
     // Set up currency input behavior if form is visible (either add or edit)
     if (isFormVisible || editingExpenseId) {
-      setTimeout(() => setupSimpleCurrencyInput(), 50);
+      setTimeout(() => {
+        setupSimpleCurrencyInput();
+        setupFormKeyboardHandlers();
+      }, 50);
     }
   }
 
