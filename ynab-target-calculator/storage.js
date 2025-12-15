@@ -5,11 +5,71 @@
 (function() {
   'use strict';
 
+  // Migration: Copy data from local storage to sync storage (runs once)
+  async function migrateLocalToSync() {
+    return new Promise((resolve) => {
+      // Check if migration has already been done
+      chrome.storage.sync.get(['tc_migration_complete'], (syncResult) => {
+        if (syncResult.tc_migration_complete) {
+          // Migration already completed
+          resolve();
+          return;
+        }
+
+        // Get all data from local storage
+        chrome.storage.local.get(null, (localResult) => {
+          if (chrome.runtime.lastError) {
+            console.warn('Error reading local storage:', chrome.runtime.lastError);
+            resolve();
+            return;
+          }
+
+          // Filter to only get our extension's data (keys starting with 'tc_')
+          const migrationData = {};
+          let hasData = false;
+          
+          for (const key in localResult) {
+            if (key.startsWith('tc_')) {
+              migrationData[key] = localResult[key];
+              hasData = true;
+            }
+          }
+
+          if (!hasData) {
+            // No data to migrate, mark migration as complete
+            chrome.storage.sync.set({ tc_migration_complete: true }, resolve);
+            return;
+          }
+
+          // Copy all data to sync storage
+          chrome.storage.sync.set(migrationData, () => {
+            if (chrome.runtime.lastError) {
+              console.warn('Error migrating to sync storage:', chrome.runtime.lastError);
+              resolve();
+              return;
+            }
+
+            // Mark migration as complete
+            chrome.storage.sync.set({ tc_migration_complete: true }, () => {
+              console.log('[Storage] Migration from local to sync storage completed');
+              resolve();
+            });
+          });
+        });
+      });
+    });
+  }
+
+  // Run migration on initialization
+  migrateLocalToSync();
+
   // Storage helpers
+  // Using chrome.storage.sync to sync data across Chrome browsers
+  // Note: Chrome sync has limits (100KB total, 8KB per item)
   window.Storage = {
     async get(categoryId) {
       return new Promise((resolve) => {
-        chrome.storage.local.get([`tc_${categoryId}`], (result) => {
+        chrome.storage.sync.get([`tc_${categoryId}`], (result) => {
           resolve(result[`tc_${categoryId}`] || { expenses: [], collapsed: false });
         });
       });
@@ -17,7 +77,7 @@
     
     async set(categoryId, data) {
       return new Promise((resolve) => {
-        chrome.storage.local.set({ [`tc_${categoryId}`]: data }, resolve);
+        chrome.storage.sync.set({ [`tc_${categoryId}`]: data }, resolve);
       });
     }
   };

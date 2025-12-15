@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Target Calculator for YNAB",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Add a mini spreadsheet to YNAB category sidebars for calculating recurring expenses",
   "permissions": ["storage"],
   "host_permissions": ["https://app.ynab.com/*"],
