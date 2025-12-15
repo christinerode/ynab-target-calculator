@@ -121,9 +121,9 @@
     // Remove any leading/trailing whitespace
     const text = exampleText.trim();
     
-    // Try to find a number pattern (with separators including spaces and /)
-    // Match patterns like: 1,234.56 or 1.234,56 or 1 234,56 or 1234.56 or 1234,56 or 117,174/73
-    const numberPattern = /(\d{1,3}(?:[\s.,]\d{3})*(?:[.,\/]\d{2})?|\d+[.,\/]\d{2}|\d+)/;
+    // Try to find a number pattern (with separators including spaces)
+    // Match patterns like: 1,234.56 or 1.234,56 or 1 234,56 or 1234.56 or 1234,56
+    const numberPattern = /(\d{1,3}(?:[\s.,]\d{3})*(?:[.,]\d{2})?|\d+[.,]\d{2}|\d+)/;
     const numberMatch = text.match(numberPattern);
     
     if (!numberMatch) return null;
@@ -136,26 +136,9 @@
     let thousandSeparator = ',';
     let detectedThousandSeparator = false;
     
-    // Check for "/" as decimal separator first (Iranian currency)
-    if (numberPart.includes('/') && /\/\d{2}$/.test(numberPart)) {
-      decimalSeparator = '/';
-      // Remove "/" and decimal part to check for thousand separators
-      const slashIndex = numberPart.lastIndexOf('/');
-      const integerPart = numberPart.substring(0, slashIndex);
-      if (integerPart.includes(',')) {
-        thousandSeparator = ',';
-        detectedThousandSeparator = true;
-      } else if (integerPart.includes('.')) {
-        thousandSeparator = '.';
-        detectedThousandSeparator = true;
-      } else if (integerPart.includes(' ')) {
-        thousandSeparator = ' ';
-        detectedThousandSeparator = true;
-      }
-    }
     // Check for spaces as thousand separators (e.g., "117 174,73" or "1 234.56")
     // If there are spaces in the number part, they're likely thousand separators
-    else if (numberPart.includes(' ')) {
+    if (numberPart.includes(' ')) {
       thousandSeparator = ' ';
       detectedThousandSeparator = true;
       // Determine decimal separator (comma or period, whichever appears after spaces)
@@ -265,9 +248,9 @@
     }
     
     // Check if we detected decimals in the number
-    // A decimal separator is followed by exactly 2 digits (e.g., ",95" or ".95" or "/95")
-    // Check for: ",XX" or ".XX" or "/XX" (Iranian uses /)
-    const hasDecimalPart = /[.,\/]\d{2}$/.test(numberPart);
+    // A decimal separator is followed by exactly 2 digits (e.g., ",95" or ".95")
+    // Check for: ",XX" or ".XX"
+    const hasDecimalPart = /[.,]\d{2}$/.test(numberPart);
     
     if (hasDecimalPart) {
       // Number has decimal part (separator followed by 2-3 digits), so currency uses decimals
@@ -410,21 +393,7 @@
       
       // Normalize decimal separator: convert to period for JavaScript parsing
       // Need to distinguish between decimal and thousand separators
-      // Also handle "/" for Iranian currency
-      
-      // Check for "/" as decimal separator first (Iranian currency)
-      const lastSlashIndex = cleaned.lastIndexOf('/');
-      if (lastSlashIndex !== -1 && /\/\d{2}$/.test(cleaned)) {
-        // "/" followed by exactly 2 digits at the end is a decimal separator
-        const integerPart = cleaned.substring(0, lastSlashIndex);
-        const decimalPart = cleaned.substring(lastSlashIndex + 1);
-        
-        // Remove thousand separators from integer part
-        let normalizedInteger = integerPart.replace(/[.,\s]/g, ''); // Remove periods, commas, spaces
-        
-        // Reconstruct with period as decimal separator
-        cleaned = normalizedInteger + '.' + decimalPart;
-      } else if (currencyInfo.decimalSeparator === ',') {
+      if (currencyInfo.decimalSeparator === ',') {
         // Comma is decimal separator
         // Find the last comma (it's the decimal separator)
         // Everything before it might have thousand separators (periods or spaces)
@@ -580,12 +549,7 @@
       
       // Replace decimal separator if needed (only if using decimals)
       if (currencyInfo.useDecimals && currencyInfo.decimalSeparator !== '.') {
-        if (currencyInfo.decimalSeparator === '/') {
-          // Special handling for "/" separator (Iranian currency)
-          formatted = formatted.replace('.', '/');
-        } else {
-          formatted = formatted.replace('.', currencyInfo.decimalSeparator);
-        }
+        formatted = formatted.replace('.', currencyInfo.decimalSeparator);
       }
       
       // Add thousand separators if the number is large enough
