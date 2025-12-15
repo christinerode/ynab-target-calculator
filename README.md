@@ -1,8 +1,10 @@
-# YNAB Expense Calculator (ynab-target-calculator)
+# Target Calculator for YNAB (ynab-target-calculator)
+
+### Calculate Categories, Targets, Expenses
 
 ![YNAB Expense Calculator promo](assets/bigpromo.png)
 
-YNAB Expense Calculator adds a flexible mini‑spreadsheet directly into your category sidebar, so you can keep track of the math behind each target.
+Target Calculator for YNAB is a Chrome extension that adds a flexible mini‑spreadsheet directly into your category sidebar, so you can keep track of the math behind each target.
 
 Instead of creating dozens of separate categories or doing the math in Notes or a separate spreadsheet, you get a small, purpose‑built calculator that lives right where you budget.
 
@@ -21,13 +23,13 @@ This extension gives you a small calculator embedded in the sidebar for each cat
 - Keep track of recurring expenses in a category  
 - Instantly add up regular expenses to decide what your target should be  
 - Create a record of when and how you came to the budgeted amount  
-- Quickly tell if you need to adjust your target  
-
-![Category sidebar with calculator](assets/ynab3.png)
+- Quickly tell if you need to adjust your target
 
 Think of it as notes, but better.
 
----
+![Category sidebar with calculator](assets/promo1_w.png)
+
+
 
 ## Features
 
@@ -49,9 +51,9 @@ Think of it as notes, but better.
 - **Exclude / pause expenses**  
   Temporarily exclude an item from the total when a subscription is paused, without losing the line for later.
 
----
 
-![Calculator with multiple line items](assets/ynab4.png)
+
+![Calculator with multiple line items](assets/promo2_w.png)
 
 ## How it works
 
@@ -67,7 +69,7 @@ Over time, the calculator becomes a living log of how you structure that categor
 
 ---
 
-![Target exceeded warning](assets/ynab5.png)
+![Target exceeded warning](assets/promo3_w.png)
 
 ## Installation
 
